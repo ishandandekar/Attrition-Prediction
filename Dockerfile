@@ -4,6 +4,8 @@ WORKDIR /serve
 
 COPY ./src ./src
 COPY ./config ./config
+COPY ./artifacts/data_preprocessor ./artifacts/data_preprocessor
+COPY ./artifacts/model_trainer ./artifacts/model_trainer
 COPY requirements.txt requirements.txt
 COPY setup.py setup.py
 

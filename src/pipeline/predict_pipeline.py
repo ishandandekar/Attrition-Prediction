@@ -34,6 +34,3 @@ class PredictionPipeline:
 
         except Exception as e:
             logging.error(CustomException(e, sys))
-
-    def __repr__(self) -> str:
-        return f"\nPreprocessor: {self.preprocessor}\nModel: {self.model}"
