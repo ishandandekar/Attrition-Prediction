@@ -1,7 +1,7 @@
 import os
 import sys
 import joblib
-
+import numpy
 from pandas import DataFrame
 from dataclasses import dataclass
 from src.logger import logging
@@ -15,7 +15,7 @@ class PredictionConfig:
 
 
 class PredictionPipeline:
-    def __init__(self, config: PredictionConfig):
+    def __init__(self, config: PredictionConfig) -> numpy.ndarray:
         self.config = config
         self.preprocessor = joblib.load(self.config.preprocessor_path)
         self.model = joblib.load(self.config.model_path)
@@ -27,13 +27,13 @@ class PredictionPipeline:
             prediction_data = self.preprocessor.transform(data)
             logging.info("Prediction Data Preprocessed")
 
-            prediction = self.model.predict(prediction_data)
+            prediction = self.model.predict_proba(prediction_data)
             logging.info("Model Prediction Complete")
 
-            if prediction[0] == 0:
-                return "No"
-            else:
-                return "Yes"
+            return prediction
 
         except Exception as e:
             logging.error(CustomException(e, sys))
+
+    def __repr__(self) -> str:
+        return f"\nPreprocessor: {self.preprocessor}\nModel: {self.model}"
