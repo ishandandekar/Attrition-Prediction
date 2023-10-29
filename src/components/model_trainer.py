@@ -37,7 +37,7 @@ class ModelTrainer:
             start = time.time()
             rfc = RandomForestClassifier(random_state=42)
             grid_search_cv = GridSearchCV(
-                estimator=rfc, param_grid=params, cv=5, scoring="accuracy"
+                estimator=rfc, param_grid=params, cv=5, scoring="accuracy", n_jobs=-1
             )
 
             grid_search_cv.fit(X_train, y_train)
