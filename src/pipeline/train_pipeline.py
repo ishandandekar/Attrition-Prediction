@@ -28,7 +28,9 @@ except Exception as e:
 STAGE = "DATA TRANSFORMATION"
 try:
     logging.info(f">>>>>>>>>> {STAGE} <<<<<<<<<<")
-    data_transformation_component = DataTransformation(config=config.data_transformation)
+    data_transformation_component = DataTransformation(
+        config=config.data_transformation
+    )
     data_transformation_component.data_split()
     logging.info(f"{STAGE}: COMPLETE")
 except Exception as e:

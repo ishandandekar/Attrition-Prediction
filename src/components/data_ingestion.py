@@ -13,46 +13,44 @@ from src.components.data_preprocessor import DataPreprocessor
 from src.components.model_trainer import ModelTrainer
 from src.components.model_evaluation import ModelEvaluation
 
+
 @dataclass
 class DataIngestionConfig:
     root_dir: str
     source_URL: str
     local_file: str
 
-class DataIngestion:
 
-    def __init__(self, config:DataIngestionConfig):
+class DataIngestion:
+    def __init__(self, config: DataIngestionConfig):
         self.config = config
 
     def download_zip_file(self) -> None:
-
         try:
             os.makedirs(self.config.root_dir, exist_ok=True)
 
             if not os.path.exists(self.config.local_file):
-                
                 filename, _ = request.urlretrieve(
-                    url = self.config.source_URL,
-                    filename = self.config.local_file
+                    url=self.config.source_URL, filename=self.config.local_file
                 )
                 logging.info(f"{filename} downloaded")
 
             else:
                 logging.info("File already exists")
-        
-        except Exception as e:
-            logging.error(CustomException(e,sys))    
 
-    def extract_zip_file(self) -> None:
-
-        try:
-            with zipfile.ZipFile(self.config.local_file, 'r') as zip_ref:
-                zip_ref.extractall(self.config.root_dir)
-                
         except Exception as e:
             logging.error(CustomException(e, sys))
 
-if __name__=="__main__":
+    def extract_zip_file(self) -> None:
+        try:
+            with zipfile.ZipFile(self.config.local_file, "r") as zip_ref:
+                zip_ref.extractall(self.config.root_dir)
+
+        except Exception as e:
+            logging.error(CustomException(e, sys))
+
+
+if __name__ == "__main__":
     config = read_config(CONFIG_FILE)
     data = DataIngestion(config.data_ingestion)
     data.download_zip_file()
@@ -69,5 +67,3 @@ if __name__=="__main__":
 
     me = ModelEvaluation(config.model_evaluation)
     me.model_evaluator(test_set)
-
-

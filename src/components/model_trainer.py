@@ -13,16 +13,18 @@ from src.constant import PARAMS_FILE
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
 
+
 @dataclass
 class ModelTrainerConfig:
     root_dir: str
     preprocessor_path: str
 
+
 class ModelTrainer:
-    def __init__(self, config:ModelTrainerConfig):
+    def __init__(self, config: ModelTrainerConfig):
         self.config = config
 
-    def model_trainer(self, train_set:pd.DataFrame) -> None:
+    def model_trainer(self, train_set: pd.DataFrame) -> None:
         try:
             root_dir = self.config.root_dir
             os.makedirs(root_dir, exist_ok=True)
@@ -34,11 +36,10 @@ class ModelTrainer:
             logging.info("Starting Model Training...")
             start = time.time()
             rfc = RandomForestClassifier(random_state=42)
-            grid_search_cv = GridSearchCV(estimator=rfc,
-                                          param_grid=params,
-                                          cv=5,
-                                          scoring='accuracy')
-            
+            grid_search_cv = GridSearchCV(
+                estimator=rfc, param_grid=params, cv=5, scoring="accuracy"
+            )
+
             grid_search_cv.fit(X_train, y_train)
 
             end = time.time() - start
@@ -48,5 +49,4 @@ class ModelTrainer:
             logging.info("Best Model Saved")
 
         except Exception as e:
-            logging.error(CustomException(e,sys))
-
+            logging.error(CustomException(e, sys))

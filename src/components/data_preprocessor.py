@@ -15,40 +15,50 @@ from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OrdinalEncoder, LabelEncoder, StandardScaler
 
+
 @dataclass
 class DataPreprocessorConfig:
     root_dir: str
     train_data_path: str
     test_data_path: str
 
+
 class DataPreprocessor:
-    def __init__(self, config:DataPreprocessorConfig):
+    def __init__(self, config: DataPreprocessorConfig):
         self.config = config
 
-    def get_preprocessor(self, cat_feats:List[str], num_feats:List[str]) -> ColumnTransformer:
+    def get_preprocessor(
+        self, cat_feats: List[str], num_feats: List[str]
+    ) -> ColumnTransformer:
         try:
-            cat_pipeline = Pipeline([
-                ("imputer", SimpleImputer(strategy='most_frequent')),
-                ("encoder", OrdinalEncoder())
-            ])
+            cat_pipeline = Pipeline(
+                [
+                    ("imputer", SimpleImputer(strategy="most_frequent")),
+                    ("encoder", OrdinalEncoder()),
+                ]
+            )
 
-            num_pipeline = Pipeline([
-                ("imputer", SimpleImputer(strategy='median')),
-                ("scaler", StandardScaler())
-            ])
+            num_pipeline = Pipeline(
+                [
+                    ("imputer", SimpleImputer(strategy="median")),
+                    ("scaler", StandardScaler()),
+                ]
+            )
 
-            preprocessor = ColumnTransformer([
-                ("cat_pipeline",cat_pipeline,cat_feats),
-                ("num_pipeline",num_pipeline,num_feats)
-            ])
+            preprocessor = ColumnTransformer(
+                [
+                    ("cat_pipeline", cat_pipeline, cat_feats),
+                    ("num_pipeline", num_pipeline, num_feats),
+                ]
+            )
 
             logging.info("Preprocessor Pipeline Created")
 
             return preprocessor
-        
+
         except Exception as e:
             logging.error(CustomException(e, sys))
-    
+
     def preprocess_data(self) -> Tuple[pd.DataFrame, pd.DataFrame]:
         try:
             root_dir = self.config.root_dir
@@ -62,7 +72,7 @@ class DataPreprocessor:
             X_train, y_train = train_df.drop([target], axis=1), train_df[target]
             X_test, y_test = test_df.drop([target], axis=1), test_df[target]
 
-            cat_feats = [col for col in X_train.columns if X_train[col].dtype == 'O']
+            cat_feats = [col for col in X_train.columns if X_train[col].dtype == "O"]
             num_feats = [col for col in X_train.columns if col not in cat_feats]
 
             logging.info("Loading Preprocessor")
@@ -89,11 +99,6 @@ class DataPreprocessor:
             logging.info("Preprocessor Object Saved")
 
             return (train_data_transformed, test_data_tranformed)
-        
+
         except Exception as e:
             logging.error(CustomException(e, sys))
-
-
-
-
-
